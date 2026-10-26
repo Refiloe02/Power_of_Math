@@ -41,27 +41,53 @@
         }
     </style>
     <script>
-        // callAPI function that takes the base and exponent numbers as parameters
-        var callAPI = (base,exponent)=>{
-            // instantiate a headers object
-            var myHeaders = new Headers();
-            // add content type header to object
-            myHeaders.append("Content-Type", "application/json");
-            // using built in JSON utility package turn object to string and store in a variable
-            var raw = JSON.stringify({"base":base,"exponent":exponent});
-            // create a JSON object with parameters for API call and store in a variable
-            var requestOptions = {
-                method: 'POST',
-                headers: myHeaders,
-                body: raw,
-                redirect: 'follow'
-            };
-            // make API call with parameters and use promises to get response
-            fetch("https://mg5eolvb8e.execute-api.eu-north-1.amazonaws.com/dev", requestOptions)
-            .then(response => response.text())
-            .then(result => alert(JSON.parse(result).body))
-            .catch(error => console.log('error', error));
+      
+	var callAPI = (base, exponent) => {
+    const resultElement = document.getElementById("result");
+
+    resultElement.textContent = "Calculating...";
+
+    fetch("https://mg5eolvb8e.execute-api.eu-north-1.amazonaws.com/dev", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            base: base,
+            exponent: exponent
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("API error: " + response.status);
         }
+        return response.json();
+    })
+    .then(data => {
+        // Lambda returns the calculation inside its body field.
+        let message = data.body;
+
+        // Handle cases where the API response body is JSON-encoded.
+        if (typeof message === "string") {
+            try {
+                message = JSON.parse(message);
+            } catch (error) {
+                // Keep ordinary text responses unchanged.
+            }
+        }
+
+        resultElement.textContent =
+            typeof message === "string"
+                ? message
+                : JSON.stringify(message);
+    })
+    .catch(error => {
+        console.error("Calculation failed:", error);
+        resultElement.textContent =
+            "Calculation failed. Check the browser console.";
+    });
+};
+
     </script>
 </head>
 <body>
