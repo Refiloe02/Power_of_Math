@@ -43,50 +43,47 @@
     <script>
       
 	var callAPI = (base, exponent) => {
-    const resultElement = document.getElementById("result");
+        const resultElement = document.getElementById("result");
 
-    resultElement.textContent = "Calculating...";
+        resultElement.textContent = "Calculating...";
 
-    fetch("https://mg5eolvb8e.execute-api.eu-north-1.amazonaws.com/dev", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            base: base,
-            exponent: exponent
+        fetch("https://mg5eolvb8e.execute-api.eu-north-1.amazonaws.com/dev", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                base: base,
+                exponent: exponent
+            })
         })
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error("API error: " + response.status);
-        }
-        return response.json();
-    })
-    .then(data => {
-        // Lambda returns the calculation inside its body field.
-        let message = data.body;
-
-        // Handle cases where the API response body is JSON-encoded.
-        if (typeof message === "string") {
-            try {
-                message = JSON.parse(message);
-            } catch (error) {
-                // Keep ordinary text responses unchanged.
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("API error: " + response.status);
             }
-        }
+            return response.json();
+        })
+        .then(data => {
+            let message = data.body;
 
-        resultElement.textContent =
-            typeof message === "string"
-                ? message
-                : JSON.stringify(message);
-    })
-    .catch(error => {
-        console.error("Calculation failed:", error);
-        resultElement.textContent =
-            "Calculation failed. Check the browser console.";
-    });
-};
+            if (typeof message === "string") {
+                try {
+                    message = JSON.parse(message);
+                } catch (error) {
+                }
+            }
+
+            resultElement.textContent =
+                typeof message === "string"
+                    ? message
+                    : JSON.stringify(message);
+        })
+        .catch(error => {
+            console.error("Calculation failed:", error);
+            resultElement.textContent =
+                "Calculation failed. Check the browser console.";
+        });
+    };
 
     </script>
 </head>
