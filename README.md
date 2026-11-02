@@ -1,5 +1,7 @@
 # To The Power of Math — Serverless Web Application
 
+WTC-NXK6SH55
+
 A serverless web application built on AWS that calculates the power of a number using a fully serverless backend. Users enter a base number and an exponent, and the application calculates the result using AWS Lambda, stores the calculation and timestamp in Amazon DynamoDB, and displays the result in the browser.
 
 The project demonstrates my practical experience with **AWS serverless architecture, API integration, Python, NoSQL databases, and CI/CD deployment**.
